@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#101b50">
+<title>Ludo Star Online</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+ background:radial-gradient(circle at top,#304caa,#111638 65%,#080d25);
+ color:white;font-family:Arial,sans-serif;
+ min-height:100vh;padding:14px;
+}
+button{cursor:pointer;font-weight:bold;border:0}
+.app{max-width:480px;margin:auto}
+.header{
+ display:flex;align-items:center;justify-content:space-between;
+ background:#17275d;padding:12px;border:1px solid #647fe8;
+ border-radius:18px;box-shadow:0 5px 15px #0008;
+}
+.avatar{
+ width:45px;height:45px;border-radius:50%;
+ background:linear-gradient(145deg,#ffe77b,#bd7415);
+ display:grid;place-items:center;font-size:26px;
+ border:3px solid white;
+}
+.player{display:flex;align-items:center;gap:9px}
+.player small{color:#bcd0ff}
+.settings{
+ background:linear-gradient(#647ce5,#293b91);
+ color:white;padding:11px;border-radius:12px;font-size:20px
+}
+h1{text-align:center;font-size:32px;margin-top:20px;
+ color:#ffe276;text-shadow:0 3px 0 #8a4900,0 0 15px #ffc43c}
+.subtitle{text-align:center;color:#d5dcff;margin:5px 0 17px}
+.stats{display:flex;justify-content:center;gap:9px;margin-bottom:15px}
+.stat{
+ background:#253b82;padding:9px 13px;border-radius:20px;
+ border:1px solid #8295ff;font-size:13px
+}
+.board{
+ width:min(100%,390px);aspect-ratio:1;margin:15px auto;
+ display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;
+ border:7px solid #e6d9ae;border-radius:15px;
+ overflow:hidden;box-shadow:0 12px 25px #0009;
+ transform:perspective(700px) rotateX(3deg);
+}
+.zone{display:grid;place-items:center;padding:12px}
+.red{background:linear-gradient(145deg,#ff6868,#a90026)}
+.green{background:linear-gradient(145deg,#6dff9a,#087a38)}
+.yellow{background:linear-gradient(145deg,#fff18b,#d58b00)}
+.blue{background:linear-gradient(145deg,#70baff,#063caa)}
+.home{
+ background:#ffffffdf;width:90%;height:90%;border-radius:14px;
+ display:grid;grid-template-columns:1fr 1fr;
+ place-items:center;padding:10px;gap:8px;
+ box-shadow:inset 0 3px 9px #5557;
+}
+.pawn{
+ width:27px;height:27px;border-radius:50%;
+ border:3px solid #fff9;box-shadow:0 5px 0 #0005,0 6px 12px #0007;
+}
+.pawn.red{background:linear-gradient(135deg,#ffb0b0,#c50025)}
+.pawn.green{background:linear-gradient(135deg,#c1ffd2,#008b42)}
+.pawn.yellow{background:linear-gradient(135deg,#fff8b5,#d28a00)}
+.pawn.blue{background:linear-gradient(135deg,#c4eaff,#0050bb)}
+.center{
+ position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+ width:90px;height:90px;border:5px solid white;border-radius:50%;
+ background:conic-gradient(#e52643 0 25%,#ffdb39 25% 50%,#1687e8 50% 75%,#20bb63 75%);
+ display:grid;place-items:center;font-size:30px;
+ box-shadow:0 5px 15px #0009;
+}
+.board-wrap{position:relative}
+.menu{display:grid;gap:11px;margin-top:18px}
+.mainbtn{
+ width:100%;padding:16px;border-radius:15px;
+ font-size:17px;color:white;
+ box-shadow:0 5px 0 #0006,0 8px 15px #0005;
+ border:1px solid #ffffff55;
+}
+.online{background:linear-gradient(135deg,#13c6ed,#1255b9)}
+.offline{background:linear-gradient(135deg,#22ce73,#08723f)}
+.friends{background:linear-gradient(135deg,#a36bff,#5925ad)}
+.profile{background:linear-gradient(135deg,#f6b936,#b65b12)}
+.shop{background:linear-gradient(135deg,#f4d35e,#b97900)}
+.section{
+ background:#18285d;border:1px solid #6279d2;
+ border-radius:17px;padding:15px;margin-top:15px;
+}
+.section h3{color:#ffe17b;margin-bottom:10px}
+.info{display:flex;justify-content:space-between;
+ padding:8px 0;border-bottom:1px solid #ffffff22;font-size:14px}
+.footer{text-align:center;color:#aebefc;font-size:12px;padding:22px 0}
+#message{
+ display:none;position:fixed;inset:0;background:#000b;
+ z-index:10;align-items:center;justify-content:center;padding:20px;
+}
+.dialog{
+ width:100%;max-width:340px;background:#1b2c68;
+ border:2px solid #ffda67;border-radius:18px;padding:22px;text-align:center;
+}
+.dialog h2{color:#ffdf78;margin-bottom:12px}
+.dialog p{line-height:1.6;margin-bottom:17px}
+.close{background:#e4a92e;color:#251700;padding:12px 25px;border-radius:12px}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<header class="header">
+ <div class="player">
+  <div class="avatar">👑</div>
+  <div>
+   <b>SajawalKhan</b><br>
+   <small>Player ID: SKV0001</small>
+  </div>
+ </div>
+ <button class="settings" onclick="show('Settings','Game settings will be available here.')">⚙️</button>
+</header>
+
+<h1>👑 LUDO STAR 👑</h1>
+<p class="subtitle">⭐ ONLINE MULTIPLAYER ⭐</p>
+
+<div class="stats">
+ <div class="stat">🪙 0 Coins</div>
+ <div class="stat">💎 0 Gems</div>
+ <div class="stat">🏆 Level 1</div>
+</div>
+
+<div class="board-wrap">
+ <div class="board">
+  <div class="zone red">
+   <div class="home">
+    <div class="pawn red"></div><div class="pawn red"></div>
+    <div class="pawn red"></div><div class="pawn red"></div>
+   </div>
+  </div>
+  <div class="zone green">
+   <div class="home">
+    <div class="pawn green"></div><div class="pawn green"></div>
+    <div class="pawn green"></div><div class="pawn green"></div>
+   </div>
+  </div>
+  <div class="zone blue">
+   <div class="home">
+    <div class="pawn blue"></div><div class="pawn blue"></div>
+    <div class="pawn blue"></div><div class="pawn blue"></div>
+   </div>
+  </div>
+  <div class="zone yellow">
+   <div class="home">
+    <div class="pawn yellow"></div><div class="pawn yellow"></div>
+    <div class="pawn yellow"></div><div class="pawn yellow"></div>
+   </div>
+  </div>
+ </div>
+ <div class="center">🎲</div>
+</div>
+
+<div class="menu">
+ <button class="mainbtn online" onclick="show('Online Multiplayer','Online match: 4 real players will play together using their unique Player IDs. Online server will be connected in a later step.')">🌐 ONLINE MULTIPLAYER</button>
+
+ <button class="mainbtn offline" onclick="show('Offline Game','You will play with 3 computer players. Offline game mode will be developed next.')">🤖 OFFLINE VS COMPUTER</button>
+
+ <button class="mainbtn friends" onclick="show('Play With Friends','Create a private room and invite your friends with a room code.')">👥 PLAY WITH FRIENDS</button>
+
+ <button class="mainbtn shop" onclick="show('SKV 50 Goti Collection','50 3D goti designs: 10 free and 40 premium locked designs.')">👑 SKV 50 Goti Collection</button>
+
+ <button class="mainbtn profile" onclick="show('My Profile','Player ID: SKV0001 | Level: 1 | Free Awards: 50 | Premium Awards: Locked')">👤 MY PROFILE</button>
+</div>
+
+<div class="section">
+ <h3>🎮 GAME COLLECTION</h3>
+ <div class="info"><span>🎲 Ludo Boards</span><b>50 Free / 350 Paid</b></div>
+ <div class="info"><span>👑 Goti Designs</span><b>10 Free / 40 Paid</b></div>
+ <div class="info"><span>🏆 Level Awards</span><b>50 Free / 950 Paid</b></div>
+ <div class="info"><span>🌟 Total Levels</span><b>1000</b></div>
+</div>
+
+<div class="footer">
+ LUDO STAR ONLINE<br>
+ PLAY • ENJOY • WIN<br>
+ © 2026 SKV Games
+</div>
+</div>
+
+<div id="message">
+ <div class="dialog">
+  <h2 id="dialogTitle">Welcome</h2>
+  <p id="dialogText"></p>
+  <button class="close" onclick="hide()">OK</button>
+ </div>
+</div>
+
+<script>
+function show(title,text){
+ document.getElementById('dialogTitle').innerText=title;
+ document.getElementById('dialogText').innerText=text;
+ document.getElementById('message').style.display='flex';
+}
+function hide(){
+ document.getElementById('message').style.display='none';
+}
+</script>
+</body>
+</html>
