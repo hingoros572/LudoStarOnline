@@ -3,171 +3,288 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#071b59">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#071943">
 <title>Ludo Star Online</title>
-
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{
- background:radial-gradient(circle at top,#174db0,#071333 75%);
- color:white;font-family:Arial,sans-serif;
- min-height:100vh;padding:12px;
-}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at top,#2454a5,#07132e 75%);color:white;font-family:Arial,sans-serif;padding:10px}
 .app{max-width:480px;margin:auto}
-.header{
- display:flex;justify-content:space-between;align-items:center;
- background:#102b69;padding:12px;border:1px solid #e7bd54;
- border-radius:15px;
-}
-.player{display:flex;align-items:center;gap:10px}
-.avatar{font-size:35px}
-.player small{color:#c5d7ff}
-.settings{
- background:#e7b83e;color:#251600;padding:10px;
- border-radius:10px;font-size:19px
-}
-h1{
- text-align:center;color:#ffdc67;margin:18px 0 5px;
- text-shadow:0 3px 5px #000;font-size:29px
-}
-.subtitle{text-align:center;color:#c6d9ff;margin-bottom:14px}
-.stats{display:flex;justify-content:center;gap:7px;flex-wrap:wrap}
-.stat{
- background:#183b82;border:1px solid #7fa4ff;
- border-radius:20px;padding:9px 12px;font-size:13px
-}
-.art{
- margin:15px auto;width:100%;overflow:hidden;
- border:3px solid #f6cf62;border-radius:18px;
- box-shadow:0 8px 25px #0009;
-}
-.art img{width:100%;height:auto;display:block}
-.menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
-.btn{
- min-height:70px;padding:12px 7px;border-radius:14px;
- color:white;font-size:14px;font-weight:bold;
- border:2px solid #ffffff77;
- box-shadow:0 5px 0 #0007;
-}
-.online{background:linear-gradient(135deg,#16baf5,#1244ae)}
-.offline{background:linear-gradient(135deg,#20d47b,#08723c)}
-.friends{background:linear-gradient(135deg,#a35cff,#5120a5)}
-.profile{background:linear-gradient(135deg,#ffb52f,#a94b09)}
-.shop{background:linear-gradient(135deg,#f5d45a,#a66a00)}
-.section{
- background:#102b69;border:1px solid #718fe3;
- border-radius:15px;padding:15px;margin-top:15px
-}
-.section h3{color:#ffdc67;margin-bottom:10px}
-.info{
- display:flex;justify-content:space-between;gap:8px;
- padding:9px 0;border-bottom:1px solid #ffffff22;font-size:13px
-}
-.footer{text-align:center;color:#aabef0;font-size:12px;padding:20px}
-#message{
- display:none;position:fixed;inset:0;background:#000c;
- align-items:center;justify-content:center;padding:20px;z-index:5
-}
-.dialog{
- background:#142d70;border:2px solid #ffdc67;
- border-radius:18px;padding:22px;text-align:center;
- width:100%;max-width:340px
-}
-.dialog h2{color:#ffdc67;margin-bottom:12px}
-.dialog p{line-height:1.6;margin-bottom:18px}
-.close{
- background:#e9b63c;color:#241600;
- border:0;border-radius:10px;padding:12px 25px;font-weight:bold
-}
+header{display:flex;justify-content:space-between;align-items:center;background:#142d65;border:1px solid #e8c15e;border-radius:14px;padding:12px}
+header small{color:#c9d8ff}
+h1{text-align:center;color:#ffdc70;text-shadow:0 3px 5px #000;margin:17px 0 5px;font-size:27px}
+.sub{text-align:center;color:#bcd3ff;margin:5px 0 15px}
+.banner{width:100%;border:2px solid #eac45d;border-radius:14px;overflow:hidden;margin-bottom:14px}
+.banner img{width:100%;display:block}
+.panel{background:#142b60;border:1px solid #6686d8;border-radius:14px;padding:12px;margin:12px 0}
+.turn{text-align:center;font-size:17px;font-weight:bold;color:#ffdf79}
+.players{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:10px 0}
+.player{padding:9px;border-radius:9px;text-align:center;font-size:13px;border:2px solid transparent}
+.player.active{border-color:#fff;box-shadow:0 0 12px #fff8}
+.red{background:#bd203c}.green{background:#16854a}.yellow{background:#c28a0b;color:#fff}.blue{background:#1756ae}
+#board{width:min(94vw,420px);aspect-ratio:1;margin:12px auto;position:relative;border:5px solid #e9ca77;border-radius:18px;background:linear-gradient(145deg,#e6e0c9,#aebbd0);overflow:hidden;box-shadow:0 8px 25px #0009}
+.home{position:absolute;width:35%;height:35%;border:5px solid #fff;border-radius:15px;display:grid;grid-template-columns:1fr 1fr;place-items:center;padding:9px;gap:5px}
+.home.red{top:2%;left:2%}.home.green{top:2%;right:2%}.home.blue{bottom:2%;left:2%}.home.yellow{bottom:2%;right:2%}
+.home span{width:27px;height:27px;border-radius:50%;background:#fff9;border:3px solid #fff;box-shadow:0 3px 5px #0006}
+#track{position:absolute;inset:0}
+.cell{position:absolute;width:6.3%;height:6.3%;background:#fff;border:1px solid #9ba5b4;border-radius:4px;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center}
+.cell.safe{background:#ffe58a}
+.token{position:absolute;width:8%;height:8%;border-radius:50%;border:3px solid white;box-shadow:0 3px 6px #0009;transform:translate(-50%,-50%);z-index:3;color:white;font-weight:bold;font-size:10px;display:grid;place-items:center;padding:0}
+.token:disabled{opacity:1}
+#center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:25%;height:25%;border-radius:50%;background:conic-gradient(#d92342 0 25%,#e6b92c 25% 50%,#2164c5 50% 75%,#1b9b58 75%);border:4px solid white;display:grid;place-items:center;font-size:32px;box-shadow:0 3px 12px #0008}
+.controls{display:flex;justify-content:center;align-items:center;gap:15px;flex-wrap:wrap}
+#dice{width:76px;height:76px;background:linear-gradient(145deg,#fff,#d9e4ff);color:#172b5b;border:4px solid #e9c45e;border-radius:17px;font-size:39px;box-shadow:0 5px 0 #88621c}
+.action{background:linear-gradient(135deg,#ffdc70,#bd791b);color:#291900;border:0;border-radius:12px;padding:14px 19px;font-weight:bold;font-size:15px}
+#status{text-align:center;min-height:40px;line-height:1.5;color:#fff;margin-top:10px}
+#homeScreen{text-align:center}
+#gameScreen{display:none}
+.hidden{display:none!important}
+footer{text-align:center;color:#aabce6;font-size:12px;padding:16px}
 </style>
 </head>
-
 <body>
 <div class="app">
-
-<header class="header">
- <div class="player">
-  <div class="avatar">👑</div>
-  <div>
-   <b>SajawalKhan</b><br>
-   <small>Player ID: SKV0001</small>
-  </div>
- </div>
- <button class="settings" onclick="show('Settings','Settings feature will be added soon.')">⚙️</button>
+<header>
+ <div>👑 <b>LUDO STAR ONLINE</b><br><small>Player ID: SKV0001</small></div>
+ <button class="action" onclick="goHome()">HOME</button>
 </header>
 
-<h1>👑 LUDO STAR ONLINE 👑</h1>
-<p class="subtitle">⭐ PLAY • ENJOY • WIN ⭐</p>
+<h1>👑 LUDO STAR 👑</h1>
+<div class="sub">⭐ PLAY • ENJOY • WIN ⭐</div>
 
-<div class="stats">
- <div class="stat">🪙 0 Coins</div>
- <div class="stat">💎 0 Gems</div>
- <div class="stat">🏆 Level 1</div>
+<div class="banner">
+ <img src="ludo-board-design.png" alt="Ludo Star design">
 </div>
 
-<!-- Uploaded game design image -->
-<div class="art">
- <img src="ludo-board-design.png" alt="Ludo Star Online 3D Design">
-</div>
-
-<div class="menu">
- <button class="btn online" onclick="show('Online Multiplayer','Online multiplayer with 4 real players will be developed in the next steps.')">
- 🌐 ONLINE MULTIPLAYER
- </button>
-
- <button class="btn offline" onclick="show('Offline Game','Play against 3 computer players. Game logic will be added next.')">
- 🤖 OFFLINE VS COMPUTER
- </button>
-
- <button class="btn friends" onclick="show('Play With Friends','Private rooms and room codes will be added next.')">
- 👥 PLAY WITH FRIENDS
- </button>
-
- <button class="btn profile" onclick="show('My Profile','Player ID: SKV0001 | Current Level: 1')">
- 👤 MY PROFILE
- </button>
-
- <button class="btn shop" onclick="show('SKV 50 Goti Collection','10 free goti designs and 40 paid designs.')">
- 👑 SKV 50 GOTI COLLECTION
- </button>
-
- <button class="btn shop" onclick="show('Ludo Board Collection','50 free boards and 350 paid boards.')">
- 🎲 LUDO BOARD COLLECTION
- </button>
-</div>
-
-<div class="section">
- <h3>🎮 GAME COLLECTION</h3>
- <div class="info"><span>🎲 Ludo Boards</span><b>50 Free / 350 Paid</b></div>
- <div class="info"><span>👑 Goti Designs</span><b>10 Free / 40 Paid</b></div>
- <div class="info"><span>🏆 Level Awards</span><b>50 Free / 950 Paid</b></div>
- <div class="info"><span>🌟 Total Levels</span><b>1000</b></div>
-</div>
-
-<div class="footer">
- LUDO STAR ONLINE<br>
- SKV GAMES © 2026
-</div>
-</div>
-
-<div id="message">
- <div class="dialog">
-  <h2 id="dialogTitle">Welcome</h2>
-  <p id="dialogText"></p>
-  <button class="close" onclick="hide()">OK</button>
+<div id="homeScreen">
+ <div class="panel">
+  <h2>🎮 Game Mode</h2>
+  <p>Play with 3 computer players without internet.</p>
+  <button class="action" onclick="startGame()">🤖 START OFFLINE GAME</button>
  </div>
+</div>
+
+<div id="gameScreen">
+ <div class="panel">
+  <div class="turn" id="turnText">Your Turn</div>
+  <div class="players">
+   <div class="player red" id="p0">🔴 YOU</div>
+   <div class="player green" id="p1">🟢 COMPUTER 1</div>
+   <div class="player blue" id="p2">🔵 COMPUTER 2</div>
+   <div class="player yellow" id="p3">🟡 COMPUTER 3</div>
+  </div>
+ </div>
+
+ <div id="board">
+  <div class="home red"><span></span><span></span><span></span><span></span></div>
+  <div class="home green"><span></span><span></span><span></span><span></span></div>
+  <div class="home blue"><span></span><span></span><span></span><span></span></div>
+  <div class="home yellow"><span></span><span></span><span></span><span></span></div>
+  <div id="track"></div>
+  <div id="center">🎲</div>
+ </div>
+
+ <div class="panel">
+  <div class="controls">
+   <button id="dice" onclick="rollDice()">⚄</button>
+   <button class="action" onclick="newGame()">NEW GAME</button>
+  </div>
+  <div id="status">Dice roll karein!</div>
+ </div>
+</div>
+
+<footer>SKV GAMES © 2026</footer>
 </div>
 
 <script>
-function show(title,text){
- document.getElementById('dialogTitle').innerText=title;
- document.getElementById('dialogText').innerText=text;
- document.getElementById('message').style.display='flex';
+const colors=["red","green","blue","yellow"];
+const names=["YOU","COMPUTER 1","COMPUTER 2","COMPUTER 3"];
+const emojis=["🔴","🟢","🔵","🟡"];
+let pawns,turn,dice,rolled,gameOver,busy;
+
+const track=document.getElementById("track");
+const statusBox=document.getElementById("status");
+const diceButton=document.getElementById("dice");
+
+function makeTrack(){
+ track.innerHTML="";
+ for(let i=0;i<52;i++){
+  const a=(i/52)*Math.PI*2-Math.PI/2;
+  const x=50+40*Math.cos(a);
+  const y=50+40*Math.sin(a);
+  const cell=document.createElement("div");
+  cell.className="cell"+([0,13,26,39].includes(i)?" safe":"");
+  cell.style.left=x+"%";
+  cell.style.top=y+"%";
+  cell.textContent=[0,13,26,39].includes(i)?"★":"";
+  track.appendChild(cell);
+ }
 }
-function hide(){
- document.getElementById('message').style.display='none';
+
+function startGame(){
+ document.getElementById("homeScreen").style.display="none";
+ document.getElementById("gameScreen").style.display="block";
+ newGame();
 }
+
+function newGame(){
+ pawns=Array.from({length:4},()=>[-1,-1,-1,-1]);
+ turn=0;dice=0;rolled=false;gameOver=false;busy=false;
+ statusBox.textContent="Aapki bari! Dice roll karein.";
+ diceButton.textContent="⚄";
+ render();
+}
+
+function goHome(){
+ document.getElementById("gameScreen").style.display="none";
+ document.getElementById("homeScreen").style.display="block";
+}
+
+function rollDice(){
+ if(gameOver||busy||rolled||turn!==0)return;
+ roll();
+}
+
+function roll(){
+ if(gameOver||busy||rolled)return;
+ dice=Math.floor(Math.random()*6)+1;
+ rolled=true;
+ diceButton.textContent=["","⚀","⚁","⚂","⚃","⚄","⚅"][dice];
+ const movable=pawns[turn].some(p=>p===-1?dice===6:p+dice<=57);
+ statusBox.textContent=names[turn]+" ne "+dice+" nikala.";
+
+ if(!movable){
+  rolled=false;
+  statusBox.textContent+=" Koi goti nahi chal sakti.";
+  setTimeout(nextTurn,1100);
+ }else if(turn!==0){
+  busy=true;
+  setTimeout(botMove,900);
+ }else{
+  statusBox.textContent+=" Ab apni chamakti goti par tap karein.";
+ }
+ render();
+}
+
+function tokenPosition(player,index,progress){
+ if(progress===-1){
+  const homes=[
+   [[19,19],[31,19],[19,31],[31,31]],
+   [[69,19],[81,19],[69,31],[81,31]],
+   [[19,69],[31,69],[19,81],[31,81]],
+   [[69,69],[81,69],[69,81],[81,81]]
+  ];
+  return homes[player][index];
+ }
+ if(progress>=57){
+  const finish=[[44,44],[56,44],[44,56],[56,56]];
+  return finish[player];
+ }
+ const pos=(player*13+progress)%52;
+ const angle=(pos/52)*Math.PI*2-Math.PI/2;
+ return [50+40*Math.cos(angle),50+40*Math.sin(angle)];
+}
+
+function render(){
+ document.querySelectorAll(".token").forEach(e=>e.remove());
+ for(let p=0;p<4;p++){
+  document.getElementById("p"+p).classList.toggle("active",p===turn);
+  for(let i=0;i<4;i++){
+   const progress=pawns[p][i];
+   const [x,y]=tokenPosition(p,i,progress);
+   const btn=document.createElement("button");
+   btn.className="token "+colors[p];
+   btn.style.left=x+"%";btn.style.top=y+"%";
+   btn.textContent=progress>=57?"★":i+1;
+   btn.title=names[p]+" pawn "+(i+1);
+   btn.disabled=gameOver||p!==0||!rolled||!canMove(p,i);
+   btn.onclick=()=>movePawn(i);
+   document.getElementById("board").appendChild(btn);
+  }
+ }
+ document.getElementById("turnText").textContent=gameOver?"GAME OVER":names[turn]+"'S TURN";
+}
+
+function canMove(player,i){
+ const p=pawns[player][i];
+ return p===-1?dice===6:p+dice<=57;
+}
+
+function movePawn(i){
+ if(gameOver||turn!==0||!rolled||!canMove(0,i))return;
+ executeMove(0,i);
+}
+
+function executeMove(player,i){
+ let p=pawns[player][i];
+ if(p===-1)p=0;
+ else p+=dice;
+ pawns[player][i]=p;
+ rolled=false;
+ let captured=false;
+
+ if(p<51){
+  const position=(player*13+p)%52;
+  if(![0,13,26,39].includes(position)){
+   for(let other=0;other<4;other++){
+    if(other===player)continue;
+    for(let j=0;j<4;j++){
+     const op=pawns[other][j];
+     if(op>=0&&op<51&&(other*13+op)%52===position){
+      pawns[other][j]=-1;
+      captured=true;
+     }
+    }
+   }
+  }
+ }
+
+ if(pawns[player].every(v=>v>=57)){
+  gameOver=true;
+  statusBox.textContent=names[player]+" WINS! 🏆";
+  render();return;
+ }
+
+ statusBox.textContent=names[player]+" ne goti chalai."+
+  (captured?" Opponent ki goti kat di!":"");
+
+ render();
+
+ if(dice!==6){
+  setTimeout(nextTurn,850);
+ }else{
+  statusBox.textContent+=" 6 mila! Dobara bari.";
+ }
+}
+
+function botMove(){
+ if(gameOver)return;
+ const options=[];
+ for(let i=0;i<4;i++)if(canMove(turn,i))options.push(i);
+ if(!options.length){busy=false;nextTurn();return}
+ const i=options[Math.floor(Math.random()*options.length)];
+ executeMove(turn,i);
+ busy=false;
+}
+
+function nextTurn(){
+ if(gameOver)return;
+ turn=(turn+1)%4;
+ rolled=false;
+ dice=0;
+ diceButton.textContent="⚄";
+ statusBox.textContent=names[turn]+" ki bari.";
+ render();
+ if(turn!==0){
+  busy=true;
+  setTimeout(()=>{
+   busy=false;
+   roll();
+  },900);
+ }
+}
+
+makeTrack();
 </script>
 </body>
 </html>
