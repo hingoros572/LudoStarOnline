@@ -55,7 +55,7 @@ h1{
 }
 .player.active{
  border-color:white;
- box-shadow:0 0 12px #fff9, inset 0 0 8px #fff4
+ box-shadow:0 0 12px #fff9,inset 0 0 8px #fff4
 }
 .red{background:#c82040}
 .green{background:#16864c}
@@ -69,7 +69,6 @@ h1{
  color:#172b5b;font-size:25px;
  box-shadow:0 3px 0 #9aa8c4,0 4px 7px #0008
 }
-
 #turnText{
  text-align:center;color:#ffdf79;
  font-weight:bold;font-size:17px
@@ -98,7 +97,7 @@ h1{
 .cell.path{background:#fff}
 .cell.safe:after{
  content:"★";font-size:clamp(7px,2vw,13px);
- color:#c99a20
+ color:#c99a20;pointer-events:none
 }
 .cell.lane-red{background:#f5a1ad}
 .cell.lane-green{background:#9de2b6}
@@ -120,25 +119,57 @@ h1{
  box-shadow:inset 0 2px 5px #777;position:absolute
 }
 
-/* BARI GOTI */
+/* ORIGINAL STYLE 3D GOTIYAN */
 .token{
- position:absolute;z-index:4;
- width:125%;height:125%;
- border-radius:50%;border:2px solid white;
- color:white;font-size:clamp(8px,2.5vw,14px);
- font-weight:bold;
- box-shadow:0 4px 7px #000b,inset 0 2px 5px #ffffff99;
- display:grid;place-items:center;padding:0;
- transform:translate(-10%,-10%);
- cursor:pointer
+ position:absolute;
+ z-index:5;
+ top:50%;left:50%;
+ width:82%;height:82%;
+ border-radius:50%;
+ padding:0;
+ transform:translate(-50%,-50%);
+ display:grid;place-items:center;
+ font-size:clamp(7px,2vw,12px);
+ font-weight:900;
+ cursor:pointer;
+ border:2px solid #ffffff;
+ box-shadow:
+  0 5px 0 #0008,
+  0 7px 8px #0009,
+  inset 0 3px 5px #ffffffb5,
+  inset 0 -4px 5px #0005;
+ transition:transform .15s,filter .15s;
 }
-.token:disabled{opacity:1}
-.token.red{background:linear-gradient(145deg,#ff8c9d,#a90027)}
-.token.green{background:linear-gradient(145deg,#9bffc0,#08753b)}
-.token.blue{background:linear-gradient(145deg,#9ed5ff,#0642a0)}
+.token:before{
+ content:"";
+ position:absolute;
+ top:12%;left:18%;
+ width:35%;height:22%;
+ border-radius:50%;
+ background:linear-gradient(180deg,#ffffffd9,#ffffff00);
+ transform:rotate(-35deg);
+ pointer-events:none
+}
+.token:active{
+ transform:translate(-50%,-50%) scale(.9)
+}
+.token:disabled{opacity:1;cursor:default}
+
+.token.red{
+ background:radial-gradient(circle at 35% 25%,#ffb1bc 0%,#ff425e 35%,#d0002d 70%,#790018 100%);
+ border-color:#ffb8c3
+}
+.token.green{
+ background:radial-gradient(circle at 35% 25%,#d2ffdc 0%,#50e982 35%,#078c40 70%,#004b24 100%);
+ border-color:#c4ffcf
+}
+.token.blue{
+ background:radial-gradient(circle at 35% 25%,#c6e8ff 0%,#55aaff 35%,#0756d7 70%,#00266f 100%);
+ border-color:#c4e5ff
+}
 .token.yellow{
- background:linear-gradient(145deg,#fff2a0,#bd7900);
- color:#392400
+ background:radial-gradient(circle at 35% 25%,#fff9c2 0%,#ffe45c 35%,#e7a900 70%,#805000 100%);
+ border-color:#fff4b0;color:#493000
 }
 
 #controls{
@@ -150,7 +181,7 @@ h1{
  border-radius:15px;
  background:linear-gradient(145deg,#fff,#d9e4ff);
  color:#172b5b;font-size:39px;
- box-shadow:0 5px 0 #88621c
+ box-shadow:0 5px 0 #88621c,0 8px 12px #0008
 }
 #status{
  text-align:center;line-height:1.5;
@@ -234,7 +265,14 @@ footer{
 <script>
 const names=["YOU","COMPUTER 1","COMPUTER 2","COMPUTER 3"];
 const colors=["red","green","blue","yellow"];
-const starts=[0,13,26,39];
+
+/* Sahi starting positions:
+   Red = 0
+   Green = 13
+   Blue = 39
+   Yellow = 26
+*/
+const starts=[0,13,39,26];
 
 const diceFaces=["🎲","⚀","⚁","⚂","⚃","⚄","⚅"];
 
@@ -253,11 +291,19 @@ const path=[
 [7,0],[6,0]
 ];
 
+/* Har player ki apni sahi finish lane */
 const lanes=[
+ /* RED: left se center */
  [[7,1],[7,2],[7,3],[7,4],[7,5],[7,6]],
+
+ /* GREEN: top se center */
  [[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]],
- [[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]],
- [[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]]
+
+ /* BLUE: bottom se center */
+ [[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]],
+
+ /* YELLOW: right se center */
+ [[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]]
 ];
 
 const yards=[
@@ -370,6 +416,7 @@ function globalPosition(p,progress){
 function canMove(p,i){
  const v=pawns[p][i];
 
+ if(v===57)return false;
  if(v===-1)return dice===6;
 
  return v+dice<=57;
@@ -424,12 +471,16 @@ function doRoll(){
 function movePawn(p,i){
  if(gameOver||!rolled||!canMove(p,i))return;
 
+ const rolledNumber=dice;
  let v=pawns[p][i];
+
+ /* 6 par goti apne hi rang ke start point se niklegi */
  v=(v===-1)?0:v+dice;
  pawns[p][i]=v;
 
  let captured=0;
 
+ /* Sirf outer track par goti kaati ja sakti hai */
  if(v>=0&&v<=50){
   const pos=globalPosition(p,v);
 
@@ -467,7 +518,7 @@ function movePawn(p,i){
 
  render();
 
- if(dice===6){
+ if(rolledNumber===6){
   statusBox.textContent+=" 6 mila! Dobara bari.";
 
   if(p!==0){
@@ -521,17 +572,22 @@ function render(){
    }else if(v<=50){
     [r,c]=path[globalPosition(p,v)];
 
-   }else{
+   }else if(v<=56){
     [r,c]=lanes[p][v-51];
+
+   }else{
+    /* Finish par pohanchne wali goti center mein */
+    [r,c]=[7,7];
    }
 
    const token=document.createElement("button");
    token.className="token "+colors[p];
-   token.textContent=v===57?"★":i+1;
+   token.textContent=v===57?"★":"";
 
    token.disabled=
     gameOver||p!==0||!rolled||!canMove(p,i);
 
+   token.setAttribute("aria-label",names[p]+" token "+(i+1));
    token.onclick=()=>movePawn(p,i);
 
    cells[key(r,c)].appendChild(token);
