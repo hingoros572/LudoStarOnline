@@ -96,7 +96,6 @@ h1{
 }
 .cell.path{background:#fff}
 
-/* Home ke colored areas */
 .cell.yard-red{
  background:linear-gradient(145deg,#f0445e,#a90e2c)
 }
@@ -109,30 +108,27 @@ h1{
 .cell.yard-yellow{
  background:linear-gradient(145deg,#f4c64b,#a87508)
 }
-
-/* Home ke andar white inset panel */
 .cell.yard-inner{
  background:linear-gradient(145deg,#ffffff,#e8eaf0)!important;
  border-color:#c4c7d0;
- box-shadow:inset 0 1px 3px #ffffff;
+ box-shadow:inset 0 1px 3px #ffffff
 }
 
-/* Starting boxes */
 .cell.start-red{
  background:linear-gradient(145deg,#ff7185,#c82040)!important;
- box-shadow:inset 0 0 0 2px #fff7;
+ box-shadow:inset 0 0 0 2px #fff7
 }
 .cell.start-green{
  background:linear-gradient(145deg,#54e394,#16864c)!important;
- box-shadow:inset 0 0 0 2px #fff7;
+ box-shadow:inset 0 0 0 2px #fff7
 }
 .cell.start-blue{
  background:linear-gradient(145deg,#68b5ff,#1757b5)!important;
- box-shadow:inset 0 0 0 2px #fff7;
+ box-shadow:inset 0 0 0 2px #fff7
 }
 .cell.start-yellow{
  background:linear-gradient(145deg,#ffe47a,#bd850c)!important;
- box-shadow:inset 0 0 0 2px #fff7;
+ box-shadow:inset 0 0 0 2px #fff7
 }
 
 .cell.safe:after{
@@ -153,7 +149,7 @@ h1{
  box-shadow:inset 0 0 8px #0005
 }
 
-/* 4 khaali home rings - har player ka apna rang */
+/* HOME RINGS */
 .yardDot{
  position:absolute;
  width:88%;height:88%;
@@ -169,52 +165,106 @@ h1{
 }
 .yardDot.ring-red{
  border-color:#c82040;
- box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #a50e2b,0 0 0 1px #ff8a9b
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #a50e2b
 }
 .yardDot.ring-green{
  border-color:#16864c;
- box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #075b30,0 0 0 1px #78e5a7
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #075b30
 }
 .yardDot.ring-blue{
  border-color:#1757b5;
- box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #0b367e,0 0 0 1px #80baff
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #0b367e
 }
 .yardDot.ring-yellow{
  border-color:#bd850c;
- box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #805600,0 0 0 1px #ffe28a
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #805600
 }
 
-/* 3D GOTIYAN - STACK SYSTEM */
+/* STANDING 3D PAWNS */
 .token{
  position:absolute;
  z-index:5;
  top:0;left:0;
- width:65%;height:65%;
- border-radius:50%;
+ width:82%;height:82%;
  padding:0;
+ border:0;
+ background:transparent!important;
+ border-radius:0;
  display:grid;place-items:center;
  font-size:clamp(7px,2vw,12px);
  font-weight:900;
  cursor:pointer;
- border:2px solid #ffffff;
- box-shadow:
-  0 5px 0 #0008,
-  0 7px 8px #0009,
-  inset 0 3px 5px #ffffffb5,
-  inset 0 -4px 5px #0005;
+ box-shadow:none!important;
  transition:transform .15s,filter .15s;
  transform-origin:center;
 }
+
+/* ROUND HEAD */
 .token:before{
  content:"";
  position:absolute;
- top:12%;left:18%;
- width:35%;height:22%;
+ width:48%;
+ height:42%;
+ left:26%;
+ top:0;
  border-radius:50%;
- background:linear-gradient(180deg,#ffffffd9,#ffffff00);
- transform:rotate(-35deg);
- pointer-events:none
+ background:radial-gradient(circle at 32% 25%,
+ #ffffff 0%,var(--head) 28%,var(--dark) 100%);
+ border:1.5px solid #ffffffcc;
+ box-shadow:
+  0 3px 4px #0008,
+  inset 0 2px 3px #ffffffb0;
+ z-index:3;
 }
+
+/* BODY AND WIDE BASE */
+.token:after{
+ content:"";
+ position:absolute;
+ width:72%;
+ height:63%;
+ left:14%;
+ top:31%;
+ border-radius:42% 42% 35% 35% / 22% 22% 75% 75%;
+ background:linear-gradient(90deg,
+ var(--dark),var(--main) 35%,var(--light) 53%,var(--main) 78%,var(--dark));
+ border:1.5px solid #ffffffbb;
+ box-shadow:
+  0 4px 0 #0008,
+  0 6px 7px #0008,
+  inset 0 3px 4px #ffffffa8;
+ z-index:2;
+}
+
+.token.red{
+ --main:#e00032;
+ --light:#ff7189;
+ --head:#ff435f;
+ --dark:#76001b;
+ color:white
+}
+.token.green{
+ --main:#078c40;
+ --light:#5bea91;
+ --head:#42dc78;
+ --dark:#004b24;
+ color:white
+}
+.token.blue{
+ --main:#0756d7;
+ --light:#70baff;
+ --head:#469bff;
+ --dark:#00266f;
+ color:white
+}
+.token.yellow{
+ --main:#e7a900;
+ --light:#fff078;
+ --head:#ffdf42;
+ --dark:#805000;
+ color:#493000
+}
+
 .token:active{transform:scale(.92)}
 .token:disabled{
  opacity:1;
@@ -224,29 +274,7 @@ h1{
 .token.selected{
  z-index:10000!important;
  filter:brightness(1.25);
- transform:translateY(-3px) scale(1.12);
- box-shadow:
-  0 7px 0 #0008,
-  0 9px 12px #000b,
-  0 0 9px #fff,
-  inset 0 3px 5px #ffffffb5,
-  inset 0 -4px 5px #0005
-}
-.token.red{
- background:radial-gradient(circle at 35% 25%,#ffb1bc 0%,#ff425e 35%,#d0002d 70%,#790018 100%);
- border-color:#ffb8c3
-}
-.token.green{
- background:radial-gradient(circle at 35% 25%,#d2ffdc 0%,#50e982 35%,#078c40 70%,#004b24 100%);
- border-color:#c4ffcf
-}
-.token.blue{
- background:radial-gradient(circle at 35% 25%,#c6e8ff 0%,#55aaff 35%,#0756d7 70%,#00266f 100%);
- border-color:#c4e5ff
-}
-.token.yellow{
- background:radial-gradient(circle at 35% 25%,#fff9c2 0%,#ffe45c 35%,#e7a900 70%,#805000 100%);
- border-color:#fff4b0;color:#493000
+ transform:translateY(-5px) scale(1.12)
 }
 
 #controls{
@@ -397,10 +425,10 @@ function updatePlayerDice(){
    el.textContent=lastDice[p]?
     diceFaces[lastDice[p]]:"🎲";
   }
- }
 }
 
-/* Updated classic home design */
+}
+
 function buildBoard(){
  board.innerHTML="";
 
@@ -410,7 +438,6 @@ function buildBoard(){
    el.className="cell";
    el.id="cell-"+key(r,c);
 
-   /* Four colored home quadrants */
    if(r<6&&c<6){
     el.classList.add("yard-red");
     if(r>=1&&r<=4&&c>=1&&c<=4)
@@ -444,32 +471,28 @@ function buildBoard(){
   }
  }
 
- /* Common path */
  path.forEach(([r,c],i)=>{
   const el=cells[key(r,c)];
   el.classList.add("path");
   if(safe.includes(i))el.classList.add("safe");
  });
 
- /* Colored home lanes */
  lanes.forEach((lane,p)=>{
   lane.forEach(([r,c])=>{
    cells[key(r,c)].classList.add("lane-"+colors[p]);
   });
  });
 
- /* Player starting squares */
  starts.forEach((pathIndex,p)=>{
   const [r,c]=path[pathIndex];
   cells[key(r,c)].classList.add("start-"+colors[p]);
  });
 
- /* Four empty colored rings in every home */
  yards.forEach((yard,p)=>{
   yard.forEach(([r,c])=>{
-   const ring=document.createElement("div");
-   ring.className="yardDot ring-"+colors[p];
-   cells[key(r,c)].appendChild(ring);
+   const dot=document.createElement("div");
+   dot.className="yardDot ring-"+colors[p];
+   cells[key(r,c)].appendChild(dot);
   });
  });
 }
@@ -646,33 +669,33 @@ function nextTurn(){
  }
 }
 
-/* Stack mein gotiyon ki alag jagah */
+/* STACK SYSTEM */
 function stackPosition(index,count){
  if(count===1){
-  return {left:17.5,top:17.5,size:65};
+  return {left:9,top:9,size:82};
  }
 
  if(count===2){
   return [
-   {left:5,top:17.5,size:65},
-   {left:30,top:17.5,size:65}
+   {left:0,top:12,size:75},
+   {left:25,top:12,size:75}
   ][index];
  }
 
  if(count===3){
   return [
-   {left:5,top:5,size:65},
-   {left:30,top:5,size:65},
-   {left:17.5,top:30,size:65}
+   {left:0,top:0,size:75},
+   {left:25,top:0,size:75},
+   {left:12,top:25,size:75}
   ][index];
  }
 
  if(count===4){
   return [
-   {left:5,top:5,size:65},
-   {left:30,top:5,size:65},
-   {left:5,top:30,size:65},
-   {left:30,top:30,size:65}
+   {left:0,top:0,size:75},
+   {left:25,top:0,size:75},
+   {left:0,top:25,size:75},
+   {left:25,top:25,size:75}
   ][index];
  }
 
@@ -736,11 +759,22 @@ function render(){
 
    const pos=stackPosition(index,stack.length);
 
-   token.style.left=pos.left+"%";
-   token.style.top=pos.top+"%";
-   token.style.width=pos.size+"%";
-   token.style.height=pos.size+"%";
+   /* Home rings ke andar goti thodi chhoti,
+      taake colored ring nazar aati rahe */
+   let size=pos.size;
+   let left=pos.left;
+   let top=pos.top;
 
+   if(v===-1&&stack.length===1){
+    size=66;
+    left=17;
+    top=17;
+   }
+
+   token.style.left=left+"%";
+   token.style.top=top+"%";
+   token.style.width=size+"%";
+   token.style.height=size+"%";
    token.style.zIndex=String(10+index);
 
    const isClickable=
