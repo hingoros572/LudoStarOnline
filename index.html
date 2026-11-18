@@ -119,15 +119,14 @@ h1{
  box-shadow:inset 0 2px 5px #777;position:absolute
 }
 
-/* ORIGINAL STYLE 3D GOTIYAN */
+/* 3D GOTIYAN - STACK SYSTEM */
 .token{
  position:absolute;
  z-index:5;
- top:50%;left:50%;
- width:82%;height:82%;
+ top:0;left:0;
+ width:65%;height:65%;
  border-radius:50%;
  padding:0;
- transform:translate(-50%,-50%);
  display:grid;place-items:center;
  font-size:clamp(7px,2vw,12px);
  font-weight:900;
@@ -139,6 +138,7 @@ h1{
   inset 0 3px 5px #ffffffb5,
   inset 0 -4px 5px #0005;
  transition:transform .15s,filter .15s;
+ transform-origin:center;
 }
 .token:before{
  content:"";
@@ -151,9 +151,26 @@ h1{
  pointer-events:none
 }
 .token:active{
- transform:translate(-50%,-50%) scale(.9)
+ transform:scale(.92)
 }
-.token:disabled{opacity:1;cursor:default}
+.token:disabled{
+ opacity:1;
+ cursor:default;
+ pointer-events:none
+}
+
+/* Selected goti sabse upar */
+.token.selected{
+ z-index:10000!important;
+ filter:brightness(1.25);
+ transform:translateY(-3px) scale(1.12);
+ box-shadow:
+  0 7px 0 #0008,
+  0 9px 12px #000b,
+  0 0 9px #fff,
+  inset 0 3px 5px #ffffffb5,
+  inset 0 -4px 5px #0005
+}
 
 .token.red{
  background:radial-gradient(circle at 35% 25%,#ffb1bc 0%,#ff425e 35%,#d0002d 70%,#790018 100%);
@@ -266,12 +283,6 @@ footer{
 const names=["YOU","COMPUTER 1","COMPUTER 2","COMPUTER 3"];
 const colors=["red","green","blue","yellow"];
 
-/* Sahi starting positions:
-   Red = 0
-   Green = 13
-   Blue = 39
-   Yellow = 26
-*/
 const starts=[0,13,39,26];
 
 const diceFaces=["🎲","⚀","⚁","⚂","⚃","⚄","⚅"];
@@ -291,18 +302,10 @@ const path=[
 [7,0],[6,0]
 ];
 
-/* Har player ki apni sahi finish lane */
 const lanes=[
- /* RED: left se center */
  [[7,1],[7,2],[7,3],[7,4],[7,5],[7,6]],
-
- /* GREEN: top se center */
  [[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]],
-
- /* BLUE: bottom se center */
  [[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]],
-
- /* YELLOW: right se center */
  [[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]]
 ];
 
@@ -335,6 +338,7 @@ function updatePlayerDice(){
     diceFaces[lastDice[p]]:"🎲";
   }
  }
+
 }
 
 function buildBoard(){
@@ -474,13 +478,11 @@ function movePawn(p,i){
  const rolledNumber=dice;
  let v=pawns[p][i];
 
- /* 6 par goti apne hi rang ke start point se niklegi */
  v=(v===-1)?0:v+dice;
  pawns[p][i]=v;
 
  let captured=0;
 
- /* Sirf outer track par goti kaati ja sakti hai */
  if(v>=0&&v<=50){
   const pos=globalPosition(p,v);
 
@@ -555,13 +557,53 @@ function nextTurn(){
  }
 }
 
+/* Stack mein gotiyon ki alag jagah */
+function stackPosition(index,count){
+ if(count===1){
+  return {left:17.5,top:17.5,size:65};
+ }
+
+ if(count===2){
+  return [
+   {left:5,top:17.5,size:65},
+   {left:30,top:17.5,size:65}
+  ][index];
+ }
+
+ if(count===3){
+  return [
+   {left:5,top:5,size:65},
+   {left:30,top:5,size:65},
+   {left:17.5,top:30,size:65}
+  ][index];
+ }
+
+ if(count===4){
+  return [
+   {left:5,top:5,size:65},
+   {left:30,top:5,size:65},
+   {left:5,top:30,size:65},
+   {left:30,top:30,size:65}
+  ][index];
+ }
+
+ /* Agar 4 se zyada gotiyan ek box mein hon */
+ const col=index%4;
+ const row=Math.floor(index/4);
+ return {
+  left:col*17,
+  top:row*17,
+  size:48
+ };
+}
+
 function render(){
  document.querySelectorAll(".token").forEach(x=>x.remove());
 
- for(let p=0;p<4;p++){
-  document.getElementById("p"+p)
-   .classList.toggle("active",p===turn);
+ const stacks={};
 
+ /* Pehle har goti ka board wala box nikalna */
+ for(let p=0;p<4;p++){
   for(let i=0;i<4;i++){
    const v=pawns[p][i];
    let r,c;
@@ -576,22 +618,77 @@ function render(){
     [r,c]=lanes[p][v-51];
 
    }else{
-    /* Finish par pohanchne wali goti center mein */
     [r,c]=[7,7];
    }
+
+   const cellKey=key(r,c);
+
+   if(!stacks[cellKey])stacks[cellKey]=[];
+
+   stacks[cellKey].push({p,i,v});
+  }
+ }
+
+ /* Har box mein gotiyon ko alag jagah aur layer dena */
+ Object.keys(stacks).forEach(cellKey=>{
+  const stack=stacks[cellKey];
+
+  /* Bari wale player ki gotiyan stack ke upar */
+  stack.sort((a,b)=>{
+   if(a.p===turn&&b.p!==turn)return 1;
+   if(b.p===turn&&a.p!==turn)return -1;
+   return a.p-b.p;
+  });
+
+  stack.forEach((item,index)=>{
+   const p=item.p;
+   const i=item.i;
+   const v=item.v;
 
    const token=document.createElement("button");
    token.className="token "+colors[p];
    token.textContent=v===57?"★":"";
 
-   token.disabled=
-    gameOver||p!==0||!rolled||!canMove(p,i);
+   const pos=stackPosition(index,stack.length);
 
-   token.setAttribute("aria-label",names[p]+" token "+(i+1));
-   token.onclick=()=>movePawn(p,i);
+   token.style.left=pos.left+"%";
+   token.style.top=pos.top+"%";
+   token.style.width=pos.size+"%";
+   token.style.height=pos.size+"%";
 
-   cells[key(r,c)].appendChild(token);
-  }
+   token.style.zIndex=String(10+index);
+
+   const isClickable=
+    !gameOver&&p===0&&rolled&&canMove(p,i);
+
+   token.disabled=!isClickable;
+
+   token.setAttribute(
+    "aria-label",
+    names[p]+" token "+(i+1)
+   );
+
+   /* Tap karne par selected goti sabse upar */
+   if(isClickable){
+    token.onclick=()=>{
+     if(gameOver||!rolled||!canMove(p,i))return;
+
+     token.classList.add("selected");
+     token.style.zIndex="10000";
+
+     setTimeout(()=>{
+      movePawn(p,i);
+     },130);
+    };
+   }
+
+   cells[cellKey].appendChild(token);
+  });
+ });
+
+ for(let p=0;p<4;p++){
+  document.getElementById("p"+p)
+   .classList.toggle("active",p===turn);
  }
 
  document.getElementById("turnText").textContent=
