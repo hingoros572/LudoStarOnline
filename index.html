@@ -67,8 +67,50 @@ h1{
  flex-shrink:0;width:34px;height:34px;
  border-radius:9px;background:linear-gradient(145deg,#fff,#d9e4ff);
  color:#172b5b;font-size:25px;
- box-shadow:0 3px 0 #9aa8c4,0 4px 7px #0008
+ box-shadow:0 3px 0 #9aa8c4,0 4px 7px #0008;
+ transition:.2s
 }
+.playerDice.locked{
+ opacity:.4;
+ filter:grayscale(1);
+ box-shadow:none
+}
+.playerDice.activeDice{
+ opacity:1;
+ filter:none;
+ outline:3px solid #ffe47a;
+ box-shadow:0 0 12px #ffe47a
+}
+
+.homePlayers{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:8px;
+ margin:12px 0
+}
+.homePlayer{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ gap:5px;
+ padding:10px 7px;
+ border-radius:12px;
+ font-size:12px;
+ font-weight:bold;
+ min-height:65px
+}
+.homeAvatar{
+ display:inline-grid;
+ place-items:center;
+ width:35px;
+ height:35px;
+ border-radius:50%;
+ background:#ffffffdd;
+ font-size:23px;
+ margin-bottom:4px;
+ border:2px solid #fff
+}
+
 #turnText{
  text-align:center;color:#ffdf79;
  font-weight:bold;font-size:17px
@@ -319,6 +361,31 @@ footer{
 <div id="homeScreen" class="panel">
  <h2>🎮 Offline Ludo</h2>
  <p>1 Player vs 3 Computer Players</p>
+
+ <div class="homePlayers">
+
+  <div class="homePlayer red">
+   <span><span class="homeAvatar">👨</span><br>🔴 YOU</span>
+   <span class="playerDice">🎲</span>
+  </div>
+
+  <div class="homePlayer green">
+   <span><span class="homeAvatar">🤖</span><br>🟢 COMPUTER 1</span>
+   <span class="playerDice">🎲</span>
+  </div>
+
+  <div class="homePlayer blue">
+   <span><span class="homeAvatar">🤖</span><br>🔵 COMPUTER 2</span>
+   <span class="playerDice">🎲</span>
+  </div>
+
+  <div class="homePlayer yellow">
+   <span><span class="homeAvatar">🤖</span><br>🟡 COMPUTER 3</span>
+   <span class="playerDice">🎲</span>
+  </div>
+
+ </div>
+
  <button class="action" onclick="startGame()">🤖 START GAME</button>
 </div>
 
@@ -330,22 +397,22 @@ footer{
   <div class="players">
    <div class="player red" id="p0">
     <span>🔴 YOU</span>
-    <span class="playerDice" id="pd0">🎲</span>
+    <span class="playerDice locked" id="pd0">🎲</span>
    </div>
 
    <div class="player green" id="p1">
     <span>🟢 COMPUTER 1</span>
-    <span class="playerDice" id="pd1">🎲</span>
+    <span class="playerDice locked" id="pd1">🎲</span>
    </div>
 
    <div class="player blue" id="p2">
     <span>🔵 COMPUTER 2</span>
-    <span class="playerDice" id="pd2">🎲</span>
+    <span class="playerDice locked" id="pd2">🎲</span>
    </div>
 
    <div class="player yellow" id="p3">
     <span>🟡 COMPUTER 3</span>
-    <span class="playerDice" id="pd3">🎲</span>
+    <span class="playerDice locked" id="pd3">🎲</span>
    </div>
   </div>
  </div>
@@ -421,12 +488,15 @@ function key(r,c){
 function updatePlayerDice(){
  for(let p=0;p<4;p++){
   const el=document.getElementById("pd"+p);
+
   if(el){
    el.textContent=lastDice[p]?
     diceFaces[lastDice[p]]:"🎲";
-  }
-}
 
+   el.classList.toggle("activeDice",p===turn&&!gameOver);
+   el.classList.toggle("locked",p!==turn||gameOver);
+  }
+ }
 }
 
 function buildBoard(){
@@ -562,10 +632,25 @@ function doRoll(){
 
  if(!moves.length){
   rolled=false;
-  statusBox.textContent+=" Koi legal move nahi. Bari khatam.";
-  render();
 
-  setTimeout(nextTurn,1100);
+  if(dice===6){
+   statusBox.textContent+=" Koi legal move nahi. 6 mila, dobara chance!";
+   render();
+
+   if(turn!==0){
+    busy=true;
+    setTimeout(()=>{
+     busy=false;
+     doRoll();
+    },1100);
+   }
+
+  }else{
+   statusBox.textContent+=" Koi legal move nahi. Bari khatam.";
+   render();
+   setTimeout(nextTurn,1100);
+  }
+
   return;
  }
 
@@ -632,10 +717,21 @@ function movePawn(p,i){
 
  render();
 
- if(rolledNumber===6){
-  statusBox.textContent+=" 6 mila! Dobara bari.";
+ // 6 ya opponent ki goti kaatne par extra turn
+ if(rolledNumber===6 || captured>0){
+
+  if(rolledNumber===6 && captured>0){
+   statusBox.textContent+=" 6 mila aur goti bhi kaati! Dobara bari.";
+  }
+  else if(rolledNumber===6){
+   statusBox.textContent+=" 6 mila! Dobara bari.";
+  }
+  else{
+   statusBox.textContent+=" Goti kaat di! Dobara bari.";
+  }
 
   if(p!==0){
+   busy=true;
    setTimeout(()=>{
     busy=false;
     doRoll();
@@ -759,8 +855,6 @@ function render(){
 
    const pos=stackPosition(index,stack.length);
 
-   /* Home rings ke andar goti thodi chhoti,
-      taake colored ring nazar aati rahe */
    let size=pos.size;
    let left=pos.left;
    let top=pos.top;
