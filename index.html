@@ -95,28 +95,93 @@ h1{
  min-width:0;min-height:0;background:#f8f7ed
 }
 .cell.path{background:#fff}
+
+/* Home ke colored areas */
+.cell.yard-red{
+ background:linear-gradient(145deg,#f0445e,#a90e2c)
+}
+.cell.yard-green{
+ background:linear-gradient(145deg,#28b86d,#086b38)
+}
+.cell.yard-blue{
+ background:linear-gradient(145deg,#347de0,#103e91)
+}
+.cell.yard-yellow{
+ background:linear-gradient(145deg,#f4c64b,#a87508)
+}
+
+/* Home ke andar white inset panel */
+.cell.yard-inner{
+ background:linear-gradient(145deg,#ffffff,#e8eaf0)!important;
+ border-color:#c4c7d0;
+ box-shadow:inset 0 1px 3px #ffffff;
+}
+
+/* Starting boxes */
+.cell.start-red{
+ background:linear-gradient(145deg,#ff7185,#c82040)!important;
+ box-shadow:inset 0 0 0 2px #fff7;
+}
+.cell.start-green{
+ background:linear-gradient(145deg,#54e394,#16864c)!important;
+ box-shadow:inset 0 0 0 2px #fff7;
+}
+.cell.start-blue{
+ background:linear-gradient(145deg,#68b5ff,#1757b5)!important;
+ box-shadow:inset 0 0 0 2px #fff7;
+}
+.cell.start-yellow{
+ background:linear-gradient(145deg,#ffe47a,#bd850c)!important;
+ box-shadow:inset 0 0 0 2px #fff7;
+}
+
 .cell.safe:after{
  content:"★";font-size:clamp(7px,2vw,13px);
  color:#c99a20;pointer-events:none
 }
-.cell.lane-red{background:#f5a1ad}
-.cell.lane-green{background:#9de2b6}
-.cell.lane-blue{background:#9bc7fa}
-.cell.lane-yellow{background:#f7df8c}
-.cell.yard-red{background:#c82040}
-.cell.yard-green{background:#16864c}
-.cell.yard-blue{background:#1757b5}
-.cell.yard-yellow{background:#bd850c}
+.cell.lane-red{background:linear-gradient(145deg,#ffb3bf,#e75a70)}
+.cell.lane-green{background:linear-gradient(145deg,#baffd0,#55c987)}
+.cell.lane-blue{background:linear-gradient(145deg,#c1e0ff,#6ba9ee)}
+.cell.lane-yellow{background:linear-gradient(145deg,#fff0b0,#e8c34e)}
+
 .cell.center{
  background:conic-gradient(
  #c82040 0 25%,#bd850c 25% 50%,
  #1757b5 50% 75%,#16864c 75%
- )
+ );
+ border:2px solid #fff;
+ box-shadow:inset 0 0 8px #0005
 }
+
+/* 4 khaali home rings - har player ka apna rang */
 .yardDot{
- width:70%;height:70%;border-radius:50%;
- background:#ffffffd9;border:2px solid white;
- box-shadow:inset 0 2px 5px #777;position:absolute
+ position:absolute;
+ width:88%;height:88%;
+ border-radius:50%;
+ background:radial-gradient(circle,#fff 0%,#f1f2f6 72%,#d5d9e3 100%);
+ border:3px solid white;
+ box-shadow:
+  0 3px 5px #0005,
+  inset 0 3px 5px #fff,
+  inset 0 -3px 5px #9ca3af;
+ pointer-events:none;
+ z-index:1
+}
+.yardDot.ring-red{
+ border-color:#c82040;
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #a50e2b,0 0 0 1px #ff8a9b
+}
+.yardDot.ring-green{
+ border-color:#16864c;
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #075b30,0 0 0 1px #78e5a7
+}
+.yardDot.ring-blue{
+ border-color:#1757b5;
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #0b367e,0 0 0 1px #80baff
+}
+.yardDot.ring-yellow{
+ border-color:#bd850c;
+ box-shadow:0 3px 5px #0006,inset 0 2px 5px #fff,inset 0 -3px 5px #805600,0 0 0 1px #ffe28a
 }
 
 /* 3D GOTIYAN - STACK SYSTEM */
@@ -150,16 +215,12 @@ h1{
  transform:rotate(-35deg);
  pointer-events:none
 }
-.token:active{
- transform:scale(.92)
-}
+.token:active{transform:scale(.92)}
 .token:disabled{
  opacity:1;
  cursor:default;
  pointer-events:none
 }
-
-/* Selected goti sabse upar */
 .token.selected{
  z-index:10000!important;
  filter:brightness(1.25);
@@ -171,7 +232,6 @@ h1{
   inset 0 3px 5px #ffffffb5,
   inset 0 -4px 5px #0005
 }
-
 .token.red{
  background:radial-gradient(circle at 35% 25%,#ffb1bc 0%,#ff425e 35%,#d0002d 70%,#790018 100%);
  border-color:#ffb8c3
@@ -338,9 +398,9 @@ function updatePlayerDice(){
     diceFaces[lastDice[p]]:"🎲";
   }
  }
-
 }
 
+/* Updated classic home design */
 function buildBoard(){
  board.innerHTML="";
 
@@ -350,10 +410,30 @@ function buildBoard(){
    el.className="cell";
    el.id="cell-"+key(r,c);
 
-   if(r<6&&c<6)el.classList.add("yard-red");
-   if(r<6&&c>8)el.classList.add("yard-green");
-   if(r>8&&c<6)el.classList.add("yard-blue");
-   if(r>8&&c>8)el.classList.add("yard-yellow");
+   /* Four colored home quadrants */
+   if(r<6&&c<6){
+    el.classList.add("yard-red");
+    if(r>=1&&r<=4&&c>=1&&c<=4)
+     el.classList.add("yard-inner");
+   }
+
+   if(r<6&&c>8){
+    el.classList.add("yard-green");
+    if(r>=1&&r<=4&&c>=10&&c<=13)
+     el.classList.add("yard-inner");
+   }
+
+   if(r>8&&c<6){
+    el.classList.add("yard-blue");
+    if(r>=10&&r<=13&&c>=1&&c<=4)
+     el.classList.add("yard-inner");
+   }
+
+   if(r>8&&c>8){
+    el.classList.add("yard-yellow");
+    if(r>=10&&r<=13&&c>=10&&c<=13)
+     el.classList.add("yard-inner");
+   }
 
    if(r>=6&&r<=8&&c>=6&&c<=8){
     el.classList.add("center");
@@ -364,23 +444,32 @@ function buildBoard(){
   }
  }
 
+ /* Common path */
  path.forEach(([r,c],i)=>{
   const el=cells[key(r,c)];
   el.classList.add("path");
   if(safe.includes(i))el.classList.add("safe");
  });
 
+ /* Colored home lanes */
  lanes.forEach((lane,p)=>{
   lane.forEach(([r,c])=>{
    cells[key(r,c)].classList.add("lane-"+colors[p]);
   });
  });
 
+ /* Player starting squares */
+ starts.forEach((pathIndex,p)=>{
+  const [r,c]=path[pathIndex];
+  cells[key(r,c)].classList.add("start-"+colors[p]);
+ });
+
+ /* Four empty colored rings in every home */
  yards.forEach((yard,p)=>{
   yard.forEach(([r,c])=>{
-   const dot=document.createElement("div");
-   dot.className="yardDot";
-   cells[key(r,c)].appendChild(dot);
+   const ring=document.createElement("div");
+   ring.className="yardDot ring-"+colors[p];
+   cells[key(r,c)].appendChild(ring);
   });
  });
 }
@@ -587,7 +676,6 @@ function stackPosition(index,count){
   ][index];
  }
 
- /* Agar 4 se zyada gotiyan ek box mein hon */
  const col=index%4;
  const row=Math.floor(index/4);
  return {
@@ -602,7 +690,6 @@ function render(){
 
  const stacks={};
 
- /* Pehle har goti ka board wala box nikalna */
  for(let p=0;p<4;p++){
   for(let i=0;i<4;i++){
    const v=pawns[p][i];
@@ -629,11 +716,9 @@ function render(){
   }
  }
 
- /* Har box mein gotiyon ko alag jagah aur layer dena */
  Object.keys(stacks).forEach(cellKey=>{
   const stack=stacks[cellKey];
 
-  /* Bari wale player ki gotiyan stack ke upar */
   stack.sort((a,b)=>{
    if(a.p===turn&&b.p!==turn)return 1;
    if(b.p===turn&&a.p!==turn)return -1;
@@ -668,7 +753,6 @@ function render(){
     names[p]+" token "+(i+1)
    );
 
-   /* Tap karne par selected goti sabse upar */
    if(isClickable){
     token.onclick=()=>{
      if(gameOver||!rolled||!canMove(p,i))return;
